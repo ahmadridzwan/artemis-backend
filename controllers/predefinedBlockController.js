@@ -1,9 +1,8 @@
 const PredefinedBlock = require('../models/PredefinedBlock');
-const { uploadImage } = require('./uploadController'); // Import upload function
+const { uploadImage } = require('./uploadController');
 
 const getAllPredefinedBlocks = async (req, res) => {
   try {
-    // Fetch all predefined blocks from MongoDB
     const blocks = await PredefinedBlock.find();
 
     res.status(200).json({ blocks });
