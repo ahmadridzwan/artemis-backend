@@ -15,22 +15,34 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
-  console.log('Login request body', req.body);
   try {
     const user = await User.findOne({ username });
-    console.log('Find user', user);
-    
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log('isMatch', isMatch);
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    console.log('token', token);
-    res.status(200).json({ token });
+    const userRole = user.isAdmin ? 'admin' : 'user';
+    const token = jwt.sign(
+      { 
+        userId: user._id,
+        username: user.username,
+        role: userRole
+      }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: '1h' }
+    );
+
+    const responseData = { 
+      user: { 
+        username: user.username,
+        role: userRole
+      }, 
+      token
+    };
+    res.status(200).json(responseData);
   } catch (err) {
-    console.log('err', err);
+    console.error('err', err);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };

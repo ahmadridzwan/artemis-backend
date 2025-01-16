@@ -15,7 +15,6 @@ const getAllPredefinedBlocks = async (req, res) => {
 
 const createPredefinedBlock = async (req, res) => {
   try {
-    console.log('Received request body:', req.body);
     const { name, description, type } = req.body;
 
     // Validate required fields before uploading
@@ -28,7 +27,6 @@ const createPredefinedBlock = async (req, res) => {
       return res.status(400).json({ error: 'Invalid type. Must be single or grouped.' });
     }
 
-    // ✅ Call the uploadImage function manually **after** validation
     uploadImage(req, res, async () => {
       try {
         // Ensure image was uploaded successfully
@@ -36,7 +34,6 @@ const createPredefinedBlock = async (req, res) => {
           return res.status(500).json({ error: 'Image upload failed. Predefined block not created.' });
         }
 
-        // ✅ Create a new predefined block in MongoDB
         const newBlock = new PredefinedBlock({
           name,
           description,

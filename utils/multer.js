@@ -22,10 +22,7 @@ module.exports = {
       if (err) {
         return res.status(400).json({ error: 'File upload error' });
       }
-
       req.body = { ...req.body };
-      console.log('Parsed Form Data:', req.body);
-
       next();
     });
   }
